@@ -1,0 +1,7 @@
+#define WIFI_SSID "your wifi"
+#define WIFI_PASSWORD "your password"
+#define HOSTNAME "gasmeter"
+#define MqttBroker "mqtt IP"
+#define MqttPort 1883
+#define SERIAL_SPEED 9600
+#define OTA_HASH "MD5 hash for OTA"

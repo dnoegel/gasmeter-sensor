@@ -1,0 +1,24 @@
+# What does this do?
+This is an arduino sketch to track a gas meter with an _ESP32_ and _QMC5883_ sensor. The sensor is attached to the gas meter and will detect rotations of the counter and report them via Mqtt.
+
+# Requirements
+* Gas meter with a magnet on one register/counter (eg. G4 RF1 style gas meters)
+* ESP32 microcontroller
+* QMC5884 chip (HMC5883 is also supported by the used library, you will need to adjust the sketch correspondingly)
+* A mqtt server (if you want to use that - you can still edit the sketch to do something else with that information)
+
+# How does it work
+Some gas meters have a magnet on the counter for the second decimal place. In my case it is nearby the "6". If you now place a sensor on the top of the counter and the 6 passes by, you can detect the magnet with an increase in the magnet field strength (in case of a compass sensor) or by a contact closing (in case of a reed sensor). 
+This again means: Whenever you detect that magnet, the counter for the second decimal place did a full rotation - which again means that the first decimal place increased by one. Which in my cases indicates a gas consumption of 0.1m³ - or 1.0kWh.
+
+# Why not another sensor?
+- I tried with a reed sensor in an aqara door- and window contact: it didn't work out as it was not sensitive enough
+- I was unsure which hall sensor to use
+- I found [this nice blog post on kompf.de](https://www.kompf.de/tech/gascountmag.html) and liked the idea to use a (quite sensitive) compass sensor
+
+
+# Setup
+
+Rename `Setup.h.orig` to  `Setup.h` and adjust the settings
+
+
