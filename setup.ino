@@ -47,7 +47,6 @@ void setupMqtt()
   if (!client.connected()) {
     reconnect();
   }
-  client.publish("mqtt.0.gas_meter.raw", "0");    
 
 
 }

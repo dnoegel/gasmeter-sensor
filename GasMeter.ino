@@ -12,7 +12,7 @@ movingAvg avgFieldStrength(20);
 
 
 String ip;
-char charBuf[15];
+char charBuf[40];
 
 void setup()
 {
@@ -37,7 +37,7 @@ void setup()
 
 int fieldStrength;
 int avg;
-int lastAvg;
+bool isHigh = false;
 unsigned long timer = millis();
 
 void loop()
@@ -52,24 +52,26 @@ void loop()
   avg = avgFieldStrength.reading(fieldStrength > 4000 ? 4000 : fieldStrength);
   
   Serial.print("Arrow: "); Serial.println(fieldStrength);  
-  // optional: send raw data via MQTT for e.g. debugging
-  // client.publish("mqtt.0.gas_meter.raw", itoa(fieldStrength, charBuf, 10));
 
   // every 10 seconds: evaluate if signall falls from high (magnet detected) to low (no magnet)
   if ((unsigned long)(millis() - timer) > 10000) {
     Serial.print("Avg: "); Serial.println(avg);
-    Serial.print("Last Avg: "); Serial.println(lastAvg);
+    Serial.print("isHigh: "); Serial.println(isHigh);
 
-    client.publish("mqtt.0.gas_meter.avg", itoa(avg, charBuf, 10));
-    client.publish("mqtt.0.gas_meter.lastAvg", itoa(lastAvg, charBuf, 10));
-
-    // if signal falls from over 2000 to under 2000 in the average of the last 10 seconds: 
-    // trigger "tick" via MQTT => 0.1m3 of gas have been consumed
-    if (avg < 2000 and lastAvg >= 2000) {
+    sprintf(charBuf, "avg: %i - high: %d", avg, isHigh);
+    client.publish("mqtt.0.gas_meter.debug", charBuf);
+ 
+    if (avg < 300 and isHigh) {
+      isHigh = false;
       client.publish("mqtt.0.gas_meter.tick", itoa(millis(), charBuf, 10));
     }
+    
+    if (avg > 2000) {
+      isHigh = true;
+    }
+
+   
     timer = millis();
-    lastAvg = avg;
   }
 
 
