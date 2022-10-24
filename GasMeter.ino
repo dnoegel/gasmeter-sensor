@@ -8,7 +8,7 @@ DFRobot_QMC5883 compass(&Wire, /*I2C addr*/QMC5883_ADDRESS);
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-movingAvg avgFieldStrength(20);
+movingAvg avgFieldStrength(40);
 
 
 String ip;
@@ -49,7 +49,7 @@ void loop()
 
   // calculate field strength & store for average calculation
   fieldStrength = sqrt(mag.XAxis ^ 2 + mag.YAxis ^ 2 + mag.ZAxis ^ 2);
-  avg = avgFieldStrength.reading(fieldStrength > 4000 ? 4000 : fieldStrength);
+  avg = avgFieldStrength.reading(fieldStrength > 5000 ? 5000 : fieldStrength);
   
   Serial.print("Arrow: "); Serial.println(fieldStrength);  
 
@@ -61,12 +61,12 @@ void loop()
     sprintf(charBuf, "avg: %i - high: %d", avg, isHigh);
     client.publish("mqtt.0.gas_meter.debug", charBuf);
  
-    if (avg < 300 and isHigh) {
+    if (avg < 150 and isHigh) {
       isHigh = false;
       client.publish("mqtt.0.gas_meter.tick", itoa(millis(), charBuf, 10));
     }
     
-    if (avg > 2000) {
+    if (avg > 1500) {
       isHigh = true;
     }
 
@@ -76,5 +76,5 @@ void loop()
 
 
   loopWebUpdater();
-  delay(500);
+  delay(250);
 }
