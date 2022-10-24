@@ -4,7 +4,7 @@ This is an arduino sketch to track a gas meter with an _ESP32_ and _QMC5883_ sen
 # Requirements
 * Gas meter with a magnet on one register/counter (eg. G4 RF1 style gas meters)
 * ESP32 microcontroller
-* QMC5884 chip (HMC5883 is also supported by the used library, you will need to adjust the sketch correspondingly)
+* QMC5883 chip (HMC5883 is also supported by the used library, you will need to adjust the sketch correspondingly)
 * A mqtt server (if you want to use that - you can still edit the sketch to do something else with that information)
 
 # How does it work
@@ -21,4 +21,5 @@ This again means: Whenever you detect that magnet, the counter for the second de
 
 Rename `Setup.h.orig` to  `Setup.h` and adjust the settings
 
-
+# 3D model for a holder
+A matching holder for the sensor can be found here: https://www.thingiverse.com/thing:5581975
