@@ -5,3 +5,7 @@
 #define MqttPort 1883
 #define SERIAL_SPEED 9600
 #define OTA_HASH "MD5 hash for OTA"
+
+#define MAX_FIELD_STRENGTH 5000
+#define TRIGGER_HIGH 1500
+#define TRIGGER_LOW 150 

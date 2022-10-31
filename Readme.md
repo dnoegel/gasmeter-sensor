@@ -19,7 +19,9 @@ This again means: Whenever you detect that magnet, the counter for the second de
 
 # Setup
 
-Rename `Setup.h.orig` to  `Setup.h` and adjust the settings
+Rename `Setup.h.orig` to  `Setup.h` and adjust the settings. The sketch will publish the MQTT debug event `mqtt.0.gas_meter.debug` - from this you can tell how to configure `TRIGGER_HIGH` and `TRIGGER_LOW` best. Be aware that in some situations the sensor will be measuring high values for hours (e.g. when the digit with the magnet is parked right under the sensor). From my experience `TRIGGER_LOW` should therefore be rather low, so that it is not in the range of the standard error of the sensor. 
+
+
 
 # 3D model for a holder
 A matching holder for the sensor can be found here: https://www.thingiverse.com/thing:5581975

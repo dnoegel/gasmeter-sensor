@@ -17,9 +17,9 @@ char charBuf[40];
 void setup()
 {
   Serial.begin(SERIAL_SPEED);
-  setupWifi();
+  ensureWifiConnected();
   setupWebUpdater();
-  
+
   while (!compass.begin())
   {
     Serial.println("Could not find a valid 5883 sensor, check wiring!");
@@ -31,7 +31,6 @@ void setup()
 
 
   setupMqtt();
-
 }
 
 
@@ -44,14 +43,13 @@ void loop()
 {
   loopMqtt();
 
-
   sVector_t mag = compass.readRaw();
 
   // calculate field strength & store for average calculation
   fieldStrength = sqrt(mag.XAxis ^ 2 + mag.YAxis ^ 2 + mag.ZAxis ^ 2);
-  avg = avgFieldStrength.reading(fieldStrength > 5000 ? 5000 : fieldStrength);
-  
-  Serial.print("Arrow: "); Serial.println(fieldStrength);  
+  avg = avgFieldStrength.reading(fieldStrength > MAX_FIELD_STRENGTH ? MAX_FIELD_STRENGTH : fieldStrength);
+
+  Serial.print("Arrow: "); Serial.println(fieldStrength);
 
   // every 10 seconds: evaluate if signall falls from high (magnet detected) to low (no magnet)
   if ((unsigned long)(millis() - timer) > 10000) {
@@ -60,17 +58,18 @@ void loop()
 
     sprintf(charBuf, "avg: %i - high: %d", avg, isHigh);
     client.publish("mqtt.0.gas_meter.debug", charBuf);
- 
-    if (avg < 150 and isHigh) {
+
+    if (avg < TRIGGER_LOW and isHigh) {
       isHigh = false;
       client.publish("mqtt.0.gas_meter.tick", itoa(millis(), charBuf, 10));
+      avgFieldStrength.reset();
     }
-    
-    if (avg > 1500) {
+
+    if (avg > TRIGGER_HIGH) {
       isHigh = true;
     }
 
-   
+
     timer = millis();
   }
 
